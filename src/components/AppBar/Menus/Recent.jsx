@@ -28,6 +28,7 @@ const Recent = () => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
                 endIcon={<ExpandMoreSharp/>}
+                sx={{ color: 'white' }}
             >
                 Recent
             </Button>

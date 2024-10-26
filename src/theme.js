@@ -1,5 +1,5 @@
+import { indigo } from '@mui/material/colors'
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
-import { teal, deepOrange, indigo, orange } from '@mui/material/colors'
 
 // Create a theme instance.
 const theme = extendTheme({
@@ -10,16 +10,16 @@ const theme = extendTheme({
     colorSchemes: {
         light: {
             palette: {
-                primary: teal,
-                secondary: deepOrange
+                primary: {
+                    main: indigo['A200']
+                }
             }
         },
         dark: {
             palette: {
                 primary: {
-                    main: indigo['A100']
-                },
-                secondary: orange
+                    main: '#2a3543'
+                }
             }
         }
     },
@@ -46,9 +46,13 @@ const theme = extendTheme({
         },
         MuiButton: {
             styleOverrides: {
-                // Name of the slot
                 root: {
-                    textTransform: 'none'
+                    textTransform: 'none',
+                    borderWidth: '.5px',
+                    '&:hover': {
+                        borderWidth: '1px',
+                        borderColor: 'white'
+                    }
                 }
             }
         },
@@ -59,14 +63,16 @@ const theme = extendTheme({
         },
         MuiOutlinedInput: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    color: theme.palette.primary.main,
-                    '.MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.primary.light },
-                    '&:hover': {
-                        '.MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.primary.main }
-                    },
-                    '& fieldset': { borderWidth: '1px !important' }
-                })
+                root: {
+                    // color: theme.palette.primary.main,
+                    // '.MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                    // '&:hover': {
+                    //     '.MuiOutlinedInput-notchedOutline': { borderColor: 'white' }
+                    // },
+                    '& fieldset': { borderWidth: '1px !important' },
+                    '&:hover fieldset': { borderWidth: '1.5px !important' },
+                    '&.Mui-focused fieldset': { borderWidth: '1.5px !important' }
+                }
             }
         }
     }

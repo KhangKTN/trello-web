@@ -31,6 +31,7 @@ const Workspace = () => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
                 endIcon={<ExpandMoreSharpIcon/>}
+                sx={{ color: 'white' }}
             >
                 Workspace
             </Button>

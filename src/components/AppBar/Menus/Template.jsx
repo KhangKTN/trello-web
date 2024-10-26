@@ -28,6 +28,7 @@ const Template = () => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
                 endIcon={<ExpandMoreSharp/>}
+                sx={{ color: 'white' }}
             >
                 Template
             </Button>
