@@ -22,19 +22,19 @@ const Template = () => {
     return (
         <Box sx={{ display: { md: 'none', lg: 'block' } }}>
             <Button
-                id="basic-button-template"
+                id='basic-button-template'
                 aria-controls={open ? 'basic-menu-template' : undefined}
-                aria-haspopup="true"
+                aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
-                endIcon={<ExpandMoreSharp/>}
+                endIcon={<ExpandMoreSharp />}
                 sx={{ color: 'white' }}
             >
                 Template
             </Button>
             <Menu
                 sx={{ width: 320 }}
-                id="basic-menu-template"
+                id='basic-menu-template'
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}

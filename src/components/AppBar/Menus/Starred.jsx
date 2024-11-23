@@ -22,19 +22,19 @@ const Starred = () => {
     return (
         <Box sx={{ display: { sm: 'none', md: 'block' } }}>
             <Button
-                id="basic-button-recent"
+                id='basic-button-recent'
                 aria-controls={open ? 'basic-menu-recent' : undefined}
-                aria-haspopup="true"
+                aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
-                endIcon={<ExpandMoreSharp/>}
+                endIcon={<ExpandMoreSharp />}
                 sx={{ color: 'white' }}
             >
                 Starred
             </Button>
             <Menu
                 sx={{ width: 320 }}
-                id="basic-menu-recent"
+                id='basic-menu-recent'
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
