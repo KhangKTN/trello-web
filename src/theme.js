@@ -1,4 +1,4 @@
-import { blue, deepPurple, indigo } from '@mui/material/colors'
+import { deepPurple } from '@mui/material/colors'
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 const APP_BAR_HEIGHT = '60px'

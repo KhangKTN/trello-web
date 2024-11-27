@@ -7,8 +7,32 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 import InsertCommentIcon from '@mui/icons-material/InsertComment'
 import ShareIcon from '@mui/icons-material/Share'
 import { Card as MuiCard } from '@mui/material'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
+const stylePlaceholder = {
+    border: '2.5px dashed green',
+    opacity: .5,
+    borderRadius: '8px'
+}
 
 const Card = ({ hideMedia, card }) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+        id: card._id,
+        data: { ...card },
+        transition: {
+            duration: 500,
+            easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+        }
+    })
+
+    const dndKitColumnStyle = {
+        transform: CSS.Translate.toString(transform),
+        transition,
+        ...(isDragging && stylePlaceholder)
+        // touchAction: 'none'
+    }
+
     return hideMedia ? (
         <MuiCard
             sx={{
@@ -36,6 +60,10 @@ const Card = ({ hideMedia, card }) => {
         </MuiCard>
     ) : (
         <MuiCard
+            ref={setNodeRef}
+            style={dndKitColumnStyle}
+            {...attributes}
+            {...listeners}
             sx={{
                 overflow: 'unset',
                 cursor: 'pointer',

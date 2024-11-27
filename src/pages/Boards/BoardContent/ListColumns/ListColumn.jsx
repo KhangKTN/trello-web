@@ -18,11 +18,10 @@ const ListColumn = ({ columns }) => {
                     px: '12px'
                 }}
             >
-                {/* <Column />
-                <Column /> */}
                 {columns?.map((column) => (
                     <Column key={column?._id} column={column} />
                 ))}
+                {/* Button Add new column */}
                 <Box
                     sx={{
                         minWidth: '200px',
