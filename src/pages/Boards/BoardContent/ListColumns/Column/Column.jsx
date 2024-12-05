@@ -11,7 +11,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 const stylePlaceholder = {
-    border: '2.5px dashed green',
+    // border: '2.5px dashed green',
     opacity: .5,
     borderRadius: '8px'
 }
@@ -29,7 +29,7 @@ const Column = ({ column }) => {
 
     // Use css for element is draging
     const dndKitColumnStyle = {
-        height: 'fit-content',
+        height: '100%',
         transform: CSS.Translate.toString(transform),
         transition,
         ...(isDragging && stylePlaceholder)

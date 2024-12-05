@@ -67,7 +67,8 @@ const Card = ({ hideMedia, card }) => {
             sx={{
                 overflow: 'unset',
                 cursor: 'pointer',
-                boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)'
+                boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
+                display: card?.isPlaceholder ? 'none' : 'block'
             }}
         >
             {card.cover && (
@@ -88,13 +89,13 @@ const Card = ({ hideMedia, card }) => {
             </CardContent>
             <CardActions sx={{ p: '0 4px 8px 4px' }}>
                 <Button size='small' sx={{ color: 'primary.text' }} startIcon={<PeopleOutlineIcon />}>
-                    {card.memberIds.length}
+                    {card?.memberIds?.length}
                 </Button>
                 <Button size='small' sx={{ color: 'primary.text' }} startIcon={<InsertCommentIcon />}>
-                    {card.comments.length}
+                    {card?.comments?.length}
                 </Button>
                 <Button size='small' sx={{ color: 'primary.text' }} startIcon={<ShareIcon />}>
-                    {card.attachments.length}
+                    {card?.attachments?.length}
                 </Button>
             </CardActions>
         </MuiCard>

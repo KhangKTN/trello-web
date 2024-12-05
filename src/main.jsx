@@ -7,10 +7,10 @@ import theme from '~/theme.js'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <CssVarsProvider theme={theme}>
-            <CssBaline/>
-            <App/>
-        </CssVarsProvider>
-    </React.StrictMode>
+    // <React.StrictMode>
+    <CssVarsProvider theme={theme}>
+        <CssBaline />
+        <App />
+    </CssVarsProvider>
+    // </React.StrictMode>
 )
