@@ -14,11 +14,11 @@ import { arrayMove } from '@dnd-kit/sortable'
 import Box from '@mui/material/Box'
 import _ from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { sortArrayByOtherArray } from '~/utils/sort'
+import formatterUtil from '~/utils/formatter.util'
+import sortUtil from '~/utils/sort.util'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCard/Card/Card'
 import ListColumn from './ListColumns/ListColumn'
-import { createPlaholderCard } from '~/utils/formatter'
 
 const DRAG_ITEM_TYPE = {
     CARD: 'DRAG_ITEM_CARD',
@@ -56,14 +56,14 @@ const BoardContent = ({ board }) => {
     const sensors = useSensors(mouseSensor, touchSensor)
 
     useEffect(() => {
-        setSortedColumn(sortArrayByOtherArray(board?.columns, board?.columnOrderIds, '_id'))
+        setSortedColumn(sortUtil.sortArrayByOtherArray(board?.columns, board?.columnOrderIds, '_id'))
     }, [board])
 
-    const findColumnByCardId = cardId => {
-        return sortedColumns?.find(col => col.cards.filter(card => card._id === cardId).length > 0)
+    const findColumnByCardId = (cardId) => {
+        return sortedColumns?.find((col) => col.cards.filter((card) => card._id === cardId).length > 0)
     }
 
-    const handleDragStart = e => {
+    const handleDragStart = (e) => {
         const {
             id: elementId,
             data: { current: dataEvent }
@@ -78,7 +78,7 @@ const BoardContent = ({ board }) => {
         }
     }
 
-    const handleDragOver = e => {
+    const handleDragOver = (e) => {
         if (dragItemType === DRAG_ITEM_TYPE.COLUMN) return
         const { active, over } = e
         if (!active || !over) return
@@ -98,7 +98,7 @@ const BoardContent = ({ board }) => {
         }
     }
 
-    const handleDragEnd = e => {
+    const handleDragEnd = (e) => {
         const { active, over } = e
         if (!active || !over) return
 
@@ -120,13 +120,13 @@ const BoardContent = ({ board }) => {
             */
             if (lastColumnDragCard._id === columnOver._id) {
                 // Get order of cards current and rearrange
-                let cardOrderIds = columnRoot?.cards?.map(c => c._id)
+                let cardOrderIds = columnRoot?.cards?.map((c) => c._id)
                 cardOrderIds = arrayMove(cardOrderIds, cardOrderIds.indexOf(cardDragId), cardOrderIds.indexOf(overId))
-                const newCardSort = sortArrayByOtherArray([...columnRoot.cards], cardOrderIds, '_id')
-                const idxColumn = sortedColumns.findIndex(col => col._id === columnRoot._id)
+                const newCardSort = sortUtil.sortArrayByOtherArray([...columnRoot.cards], cardOrderIds, '_id')
+                const idxColumn = sortedColumns.findIndex((col) => col._id === columnRoot._id)
 
                 // Set orderIds and cards for column occur event
-                setSortedColumn(oldColumns => {
+                setSortedColumn((oldColumns) => {
                     const nextColumns = _.cloneDeep(oldColumns)
                     nextColumns[idxColumn].cards = newCardSort
                     nextColumns[idxColumn].cardOrderIds = cardOrderIds
@@ -141,7 +141,7 @@ const BoardContent = ({ board }) => {
             const idColumnDrag = active?.id
             const idColumnDrop = over?.id
             if (idColumnDrag && idColumnDrop && idColumnDrag !== idColumnDrop) {
-                let columnOrderIds = sortedColumns.map(col => col._id)
+                let columnOrderIds = sortedColumns.map((col) => col._id)
                 // Sort array use lib
                 columnOrderIds = arrayMove(
                     columnOrderIds,
@@ -152,7 +152,7 @@ const BoardContent = ({ board }) => {
                 // const idx = columnOrderIds.indexOf(idColumnDrop)
                 // columnOrderIds = columnOrderIds.filter(colId => colId !== idColumnDrag)
                 // columnOrderIds.splice(idx, 0, idColumnDrag)
-                setSortedColumn(sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
+                setSortedColumn(sortUtil.sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
             }
         }
 
@@ -163,13 +163,13 @@ const BoardContent = ({ board }) => {
     }
 
     const moveCardToOtherColumn = (columnRoot, columnOver, overId, active, over, cardDragId, cardDragData) => {
-        setSortedColumn(prevColumns => {
+        setSortedColumn((prevColumns) => {
             const nextColumns = _.cloneDeep(prevColumns)
-            const nextRootColumn = nextColumns?.find(c => c._id === columnRoot._id)
-            const nextOverColumn = nextColumns?.find(c => c._id === columnOver._id)
+            const nextRootColumn = nextColumns?.find((c) => c._id === columnRoot._id)
+            const nextOverColumn = nextColumns?.find((c) => c._id === columnOver._id)
 
             // Calc new index for card is dropped
-            const overCardIdx = columnOver?.cards?.findIndex(c => c._id === overId)
+            const overCardIdx = columnOver?.cards?.findIndex((c) => c._id === overId)
             const isBelowOverItem =
                 active.rect.current.translated && active.rect.current.translated.top > over.rect.top + over.rect.height
             const modifier = isBelowOverItem ? 1 : 0
@@ -177,18 +177,18 @@ const BoardContent = ({ board }) => {
 
             if (nextRootColumn) {
                 // Remove card from root column contain card is dragged
-                nextRootColumn.cards = nextRootColumn?.cards?.filter(c => c._id !== cardDragId)
-                nextRootColumn.cardOrderIds = nextRootColumn?.cards?.map(c => c._id)
+                nextRootColumn.cards = nextRootColumn?.cards?.filter((c) => c._id !== cardDragId)
+                nextRootColumn.cardOrderIds = nextRootColumn?.cards?.map((c) => c._id)
 
                 // If card dragged is last item of the column, then add new empty card (placeholder-card)
                 if (!nextRootColumn.cards?.length) {
-                    nextRootColumn.cards = [createPlaholderCard(nextRootColumn)]
+                    nextRootColumn.cards = [formatterUtil.createPlaholderCard(nextRootColumn)]
                     nextRootColumn.cardOrderIds = [`${nextRootColumn._id}-placeholder-card`]
                 }
             }
             if (nextOverColumn) {
                 // Remove card if it is exists
-                nextOverColumn.cards = nextOverColumn?.cards?.filter(c => c._id !== cardDragId)
+                nextOverColumn.cards = nextOverColumn?.cards?.filter((c) => c._id !== cardDragId)
                 // Add new card in target column and update orderCardIds
                 cardDragData.columnId = columnOver._id
 
@@ -201,7 +201,7 @@ const BoardContent = ({ board }) => {
                     nextOverColumn.cardOrderIds = [cardDragData._id]
                 } else {
                     nextOverColumn.cards = nextOverColumn?.cards?.toSpliced(newCardIdx, 0, cardDragData)
-                    nextOverColumn.cardOrderIds = nextOverColumn?.cards?.map(c => c._id)
+                    nextOverColumn.cardOrderIds = nextOverColumn?.cards?.map((c) => c._id)
                 }
             }
             return nextColumns
@@ -209,7 +209,7 @@ const BoardContent = ({ board }) => {
     }
 
     const collisionDetectionStratery = useCallback(
-        args => {
+        (args) => {
             if (dragItemType === DRAG_ITEM_TYPE.COLUMN) {
                 return closestCorners({ ...args })
             }
@@ -220,12 +220,12 @@ const BoardContent = ({ board }) => {
             // Find first overId in intersections
             let overId = getFirstCollision(pointerIntersection, 'id')
             if (overId) {
-                const intersecColumn = sortedColumns.find(col => col._id === overId)
+                const intersecColumn = sortedColumns.find((col) => col._id === overId)
                 if (intersecColumn) {
                     // console.log('overId before:', overId)
                     overId = closestCorners({
                         ...args,
-                        droppableContainers: args.droppableContainers.filter(container => {
+                        droppableContainers: args.droppableContainers.filter((container) => {
                             return container.id !== overId && intersecColumn?.cardOrderIds?.includes(container.id)
                         })
                     })[0]?.id
@@ -249,8 +249,8 @@ const BoardContent = ({ board }) => {
         >
             <Box
                 sx={{
-                    backgroundColor: theme => (theme.palette.mode === 'light' ? '#d1c4e9' : '#49535f'),
-                    height: theme => theme.appLayout.boardContentHeight,
+                    backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#d1c4e9' : '#49535f'),
+                    height: (theme) => theme.appLayout.boardContentHeight,
                     padding: '8px 0'
                 }}
             >

@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { AddCard, Archive, CopyAll, DeleteForever, DragHandle, ExpandMoreOutlined } from '@mui/icons-material'
 import ExpandMoreSharp from '@mui/icons-material/ExpandMoreSharp'
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material'
@@ -5,14 +7,12 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
+import sortUtil from '~/utils/sort.util'
 import ListCard from './ListCard/ListCard'
-import { sortArrayByOtherArray } from '~/utils/sort'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 
 const stylePlaceholder = {
     // border: '2.5px dashed green',
-    opacity: .5,
+    opacity: 0.5,
     borderRadius: '8px'
 }
 
@@ -46,7 +46,7 @@ const Column = ({ column }) => {
         setAnchorEl(null)
     }
 
-    const sortedCard = sortArrayByOtherArray(column?.cards, column?.cardOrderIds, '_id')
+    const sortedCard = sortUtil.sortArrayByOtherArray(column?.cards, column?.cardOrderIds, '_id')
 
     return (
         <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
@@ -89,7 +89,7 @@ const Column = ({ column }) => {
                                 aria-haspopup='true'
                                 aria-expanded={open ? 'true' : undefined}
                                 onClick={handleClick}
-                                endIcon={<ExpandMoreSharp />}
+                                endicon={<ExpandMoreSharp />}
                             />
                         </Tooltip>
                         <Menu

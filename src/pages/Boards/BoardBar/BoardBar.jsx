@@ -10,7 +10,7 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import { capitalizeFirstLetter } from '~/utils/formatter'
+import formatterUtil from '~/utils/formatter.util'
 
 const MENU_STYLE = {
     color: 'white',
@@ -20,7 +20,7 @@ const MENU_STYLE = {
         color: 'white'
     },
     '&:hover': {
-        opacity: .8
+        opacity: 0.8
     }
 }
 
@@ -52,7 +52,7 @@ const BoardBar = ({ board }) => {
                     <Chip
                         sx={MENU_STYLE}
                         icon={<LockIcon />}
-                        label={capitalizeFirstLetter(board?.type)}
+                        label={formatterUtil.capitalizeFirstLetter(board?.type)}
                         clickable
                         onClick={() => {}}
                     ></Chip>
@@ -95,19 +95,19 @@ const BoardBar = ({ board }) => {
                     total={100}
                 >
                     <Tooltip title='Hello'>
-                        <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                        <Avatar alt='Remy Sharp' />
                     </Tooltip>
                     <Tooltip title='Hello'>
-                        <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
+                        <Avatar alt='Travis Howard' />
                     </Tooltip>
                     <Tooltip title='Hello'>
-                        <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
+                        <Avatar alt='Cindy Baker' />
                     </Tooltip>
                     <Tooltip title='Hello'>
-                        <Avatar alt='Agnes Walker' src='/static/images/avatar/4.jpg' />
+                        <Avatar alt='Agnes Walker' />
                     </Tooltip>
                     <Tooltip title='Hello'>
-                        <Avatar alt='Trevor Henderson' src='/static/images/avatar/5.jpg' />
+                        <Avatar alt='Trevor Henderson' />
                     </Tooltip>
                 </AvatarGroup>
             </Box>
