@@ -4,8 +4,8 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 const APP_BAR_HEIGHT = '60px'
 const BOARD_BAR_HEIGHT = '56px'
 const BOARD_CONTENT_HEIGHT = `calc(100vh - (${APP_BAR_HEIGHT} + ${BOARD_BAR_HEIGHT}))`
-const COLUMN_HEADER_HEIGHT = '50px'
-const COLUMN_FOOTER_HEIGHT = '50px'
+const COLUMN_HEADER_HEIGHT = '48px'
+const COLUMN_FOOTER_HEIGHT = '60px'
 
 // Create a theme instance.
 const theme = extendTheme({
@@ -28,7 +28,8 @@ const theme = extendTheme({
         dark: {
             palette: {
                 primary: {
-                    main: '#2a3543',
+                    // main: '#2a3543',
+                    main: deepPurple['500'],
                     text: 'white'
                 }
             }
@@ -59,10 +60,11 @@ const theme = extendTheme({
             styleOverrides: {
                 root: {
                     textTransform: 'none',
-                    borderWidth: '.5px',
+                    borderWidth: '1px',
                     '&:hover': {
                         borderWidth: '1px',
-                        borderColor: 'white'
+                        borderColor: 'white',
+                        opacity: 0.8
                     }
                 }
             }

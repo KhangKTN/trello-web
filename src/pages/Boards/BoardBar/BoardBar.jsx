@@ -41,13 +41,15 @@ const BoardBar = ({ board }) => {
             }}
         >
             <Box sx={{ display: 'flex', columnGap: 2 }}>
-                <Chip
-                    sx={MENU_STYLE}
-                    icon={<DashboardCustomize />}
-                    label={board?.title}
-                    clickable
-                    onClick={() => {}}
-                ></Chip>
+                <Tooltip title={board?.description}>
+                    <Chip
+                        sx={MENU_STYLE}
+                        icon={<DashboardCustomize />}
+                        label={board?.title}
+                        clickable
+                        onClick={() => {}}
+                    ></Chip>
+                </Tooltip>
                 {board?.type && (
                     <Chip
                         sx={MENU_STYLE}

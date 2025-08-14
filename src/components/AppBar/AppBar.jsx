@@ -1,6 +1,6 @@
 import { Close, Search } from '@mui/icons-material'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import SpaceDashboardSharpIcon from '@mui/icons-material/SpaceDashboardSharp'
 import { Badge, Button, InputAdornment, TextField, Tooltip, Typography } from '@mui/material'
@@ -35,22 +35,25 @@ function AppBar() {
         >
             <Box sx={{ display: 'flex', alignItems: 'center', columnGap: 1.5 }}>
                 {/* <GridViewIcon sx={{ color: 'primary.dark' }}/> */}
-                <Box sx={{ display: 'flex', columnGap: .5 }}>
-                    <SpaceDashboardSharpIcon fontSize='medium' sx={{ color: 'white' }}/>
-                    <Typography variant='span' sx={{ fontWeight: 'bold', color: 'white' }}>Trello</Typography>
+                <Box sx={{ display: 'flex', columnGap: 0.5 }}>
+                    <SpaceDashboardSharpIcon fontSize='medium' sx={{ color: 'white' }} />
+                    <Typography variant='span' sx={{ fontWeight: 'bold', color: 'white' }}>
+                        Trello
+                    </Typography>
                 </Box>
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, columnGap: 1 }}>
-                    <Workspace/>
-                    <Recent/>
-                    <Starred/>
-                    <Template/>
+                    <Workspace />
+                    <Recent />
+                    <Starred />
+                    <Template />
                     <Button
-                        startIcon={<AddOutlinedIcon/>}
+                        startIcon={<AddOutlinedIcon />}
                         sx={{
                             color: 'white',
                             borderColor: 'white'
                         }}
-                        variant='outlined'>
+                        variant='outlined'
+                    >
                         Create
                     </Button>
                 </Box>
@@ -79,7 +82,7 @@ function AppBar() {
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position='start'>
-                                <Search sx={{ color: 'white' }}/>
+                                <Search sx={{ color: 'white' }} />
                             </InputAdornment>
                         ),
                         endAdornment: (
@@ -94,14 +97,14 @@ function AppBar() {
                         )
                     }}
                 />
-                <ModeSelect/>
+                <ModeSelect />
                 <Tooltip title='Notifications'>
                     <Badge badgeContent={1} variant='dot' sx={{ cursor: 'pointer' }} color='error'>
-                        <NotificationsNoneIcon sx={{ color: 'white' }}/>
+                        <NotificationsNoneIcon sx={{ color: 'white' }} />
                     </Badge>
                 </Tooltip>
-                <HelpOutlineIcon sx={{ color: 'white' }}/>
-                <Account/>
+                <HelpOutlineIcon sx={{ color: 'white' }} />
+                <Account />
             </Box>
         </Box>
     )

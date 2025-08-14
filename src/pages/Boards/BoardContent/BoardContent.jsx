@@ -229,7 +229,6 @@ const BoardContent = ({ board }) => {
                             return container.id !== overId && intersecColumn?.cardOrderIds?.includes(container.id)
                         })
                     })[0]?.id
-                    // console.log('overId after:', overId)
                 }
                 lastOverId.current = overId
                 return [{ id: overId }]

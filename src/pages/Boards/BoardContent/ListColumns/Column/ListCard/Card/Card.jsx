@@ -1,18 +1,18 @@
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import InsertCommentIcon from '@mui/icons-material/InsertComment'
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
+import ShareIcon from '@mui/icons-material/Share'
+import { Card as MuiCard } from '@mui/material'
+import Button from '@mui/material/Button'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
-import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
-import InsertCommentIcon from '@mui/icons-material/InsertComment'
-import ShareIcon from '@mui/icons-material/Share'
-import { Card as MuiCard } from '@mui/material'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 
 const stylePlaceholder = {
     border: '2.5px dashed green',
-    opacity: .5,
+    opacity: 0.5,
     borderRadius: '8px'
 }
 
@@ -68,7 +68,11 @@ const Card = ({ hideMedia, card }) => {
                 overflow: 'unset',
                 cursor: 'pointer',
                 boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-                display: card?.isPlaceholder ? 'none' : 'block'
+                display: card?.isPlaceholder ? 'none' : 'block',
+                border: '1px solid transparent',
+                '&:hover': {
+                    borderColor: (theme) => theme.palette.primary.main
+                }
             }}
         >
             {card.cover && (
