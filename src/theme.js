@@ -28,7 +28,6 @@ const theme = extendTheme({
         dark: {
             palette: {
                 primary: {
-                    // main: '#2a3543',
                     main: deepPurple['500'],
                     text: 'white'
                 }

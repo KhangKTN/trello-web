@@ -29,8 +29,7 @@ function AppBar() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 overflowX: 'auto',
-                // backgroundColor: (theme) => theme.palette.mode === 'light' ? '' : ''
-                backgroundColor: 'primary.main'
+                backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.main' : '#2a3543')
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', columnGap: 1.5 }}>

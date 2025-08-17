@@ -3,6 +3,7 @@ import AddchartIcon from '@mui/icons-material/Addchart'
 import { Button, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import Column from './Column/Column'
 
 const ListColumn = ({ columns }) => {
@@ -20,6 +21,7 @@ const ListColumn = ({ columns }) => {
         }
         setNewColName({ value: '', errMsg: '' })
         setShowFormCol(false)
+        toast.success('Add new Column success!')
     }
 
     return (
@@ -47,7 +49,7 @@ const ListColumn = ({ columns }) => {
                             height: 'fit-content',
                             mx: 2,
                             p: 1.5,
-                            bgcolor: 'primary.main',
+                            bgcolor: (theme) => (theme.palette.mode === 'light' ? 'white' : '#2a3543'),
                             borderRadius: '8px'
                         }}
                     >
@@ -65,12 +67,12 @@ const ListColumn = ({ columns }) => {
                                 width: '100%',
                                 marginLeft: { xs: '12px', sm: 0 },
                                 borderColor: 'white',
-                                '& label, input': { color: 'white' },
-                                '& label.Mui-focused': { color: 'white' },
+                                '& label, input': { color: 'primary.text' },
+                                '& label.Mui-focused': { color: 'primary.text' },
                                 '& .MuiOutlinedInput-root': {
-                                    '& fieldset': { borderColor: 'white' },
-                                    '&:hover fieldset': { borderColor: 'white' },
-                                    '&.Mui-focused fieldset': { borderColor: 'white' }
+                                    '& fieldset': { borderColor: 'primary.text' },
+                                    '&:hover fieldset': { borderColor: 'primary.text' },
+                                    '&.Mui-focused fieldset': { borderColor: 'primary.text' }
                                 }
                             }}
                         />
@@ -89,8 +91,8 @@ const ListColumn = ({ columns }) => {
                             <Button
                                 onClick={() => addNewCol()}
                                 sx={{
-                                    backgroundColor: 'green',
-                                    '&:hover': { opacity: 0.8, backgroundColor: 'green' }
+                                    backgroundColor: 'primary.main',
+                                    '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
                                 }}
                                 variant='contained'
                             >
@@ -105,7 +107,7 @@ const ListColumn = ({ columns }) => {
                             maxWidth: '200px',
                             height: 'fit-content',
                             mx: 2,
-                            bgcolor: 'primary.main',
+                            backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.main' : '#2a3543'),
                             borderRadius: '8px',
                             overflow: 'hidden'
                         }}

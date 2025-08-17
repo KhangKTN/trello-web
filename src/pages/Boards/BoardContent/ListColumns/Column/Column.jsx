@@ -177,6 +177,7 @@ const Column = ({ column }) => {
                                 onChange={(e) => setNewCardName({ value: e.target.value, errMsg: '' })}
                                 error={Boolean(newCardName.errMsg)}
                                 helperText={newCardName.errMsg}
+                                data-no-dnd
                                 sx={{
                                     width: '100%',
                                     marginLeft: { xs: '12px', sm: 0 },

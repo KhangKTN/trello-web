@@ -1,8 +1,6 @@
 import {
     DndContext,
     DragOverlay,
-    MouseSensor,
-    TouchSensor,
     closestCorners,
     defaultDropAnimationSideEffects,
     getFirstCollision,
@@ -12,8 +10,9 @@ import {
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import Box from '@mui/material/Box'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { MouseSensor, TouchSensor } from '~/libraries/dnd-kit-sensors'
 import formatterUtil from '~/utils/formatter.util'
 import sortUtil from '~/utils/sort.util'
 import Column from './ListColumns/Column/Column'
@@ -38,7 +37,7 @@ const dropAnimation = {
 
 const BoardContent = ({ board }) => {
     const [sortedColumns, setSortedColumn] = useState([])
-    const [dragItemId, setDragItemId] = useState(null)
+    const [_, setDragItemId] = useState(null)
     const [dragItemType, setDragItemType] = useState(null)
     const [dragItemData, setDragItemData] = useState(null)
 
@@ -127,7 +126,7 @@ const BoardContent = ({ board }) => {
 
                 // Set orderIds and cards for column occur event
                 setSortedColumn((oldColumns) => {
-                    const nextColumns = _.cloneDeep(oldColumns)
+                    const nextColumns = cloneDeep(oldColumns)
                     nextColumns[idxColumn].cards = newCardSort
                     nextColumns[idxColumn].cardOrderIds = cardOrderIds
                     return nextColumns
@@ -164,7 +163,7 @@ const BoardContent = ({ board }) => {
 
     const moveCardToOtherColumn = (columnRoot, columnOver, overId, active, over, cardDragId, cardDragData) => {
         setSortedColumn((prevColumns) => {
-            const nextColumns = _.cloneDeep(prevColumns)
+            const nextColumns = cloneDeep(prevColumns)
             const nextRootColumn = nextColumns?.find((c) => c._id === columnRoot._id)
             const nextOverColumn = nextColumns?.find((c) => c._id === columnOver._id)
 
@@ -182,7 +181,7 @@ const BoardContent = ({ board }) => {
 
                 // If card dragged is last item of the column, then add new empty card (placeholder-card)
                 if (!nextRootColumn.cards?.length) {
-                    nextRootColumn.cards = [formatterUtil.createPlaholderCard(nextRootColumn)]
+                    nextRootColumn.cards = [formatterUtil.createPlaceholderCard(nextRootColumn)]
                     nextRootColumn.cardOrderIds = [`${nextRootColumn._id}-placeholder-card`]
                 }
             }

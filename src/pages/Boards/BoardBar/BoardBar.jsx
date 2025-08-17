@@ -16,11 +16,12 @@ const MENU_STYLE = {
     color: 'white',
     paddingX: 1,
     borderRadius: '4px',
+    backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#865ece96' : ''),
     '& .MuiSvgIcon-root': {
         color: 'white'
     },
     '&:hover': {
-        opacity: 0.8
+        backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.main' : '#2a3543')
     }
 }
 
@@ -37,7 +38,7 @@ const BoardBar = ({ board }) => {
                 borderBottom: '.5px solid',
                 borderColor: 'white',
                 paddingX: 3,
-                backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#9575cd' : '#49535f')
+                backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#d1c4e9' : '#49535f')
             }}
         >
             <Box sx={{ display: 'flex', columnGap: 2 }}>
@@ -71,13 +72,18 @@ const BoardBar = ({ board }) => {
             </Box>
             <Box sx={{ display: 'flex', columnGap: 2 }}>
                 <Button
-                    startIcon={<PersonAddIcon />}
+                    endIcon={<PersonAddIcon />}
                     variant='outlined'
                     sx={{
                         marginLeft: 2,
                         paddingX: 2,
                         borderColor: 'white',
-                        color: 'white'
+                        color: 'white',
+                        backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.main' : '#2a3543'),
+                        '&:hover': {
+                            opacity: 0.8,
+                            backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.main' : '#2a3543')
+                        }
                     }}
                 >
                     Invite

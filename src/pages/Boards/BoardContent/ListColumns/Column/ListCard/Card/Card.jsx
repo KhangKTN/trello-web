@@ -11,7 +11,7 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 
 const stylePlaceholder = {
-    border: '2.5px dashed green',
+    border: '2.5px dashed #673ab7',
     opacity: 0.5,
     borderRadius: '8px'
 }
