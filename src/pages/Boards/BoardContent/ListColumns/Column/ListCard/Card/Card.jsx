@@ -77,6 +77,7 @@ const Card = ({ hideMedia, card }) => {
         >
             {card.cover && (
                 <CardMedia
+                    sx={{ borderRadius: '4px 4px 0 0' }}
                     component='img'
                     alt='card-img'
                     height='140'

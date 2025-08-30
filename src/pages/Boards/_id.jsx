@@ -1,29 +1,25 @@
 import Container from '@mui/material/Container'
-import { useEffect, useState } from 'react'
-import boardApi from '~/apis/board.api'
-import { mockData } from '~/apis/mock-data'
+import { useEffect } from 'react'
 import AppBar from '~/components/AppBar/AppBar'
+import useFetchBoardStore from '~/stores/useFetchBoardStore'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 
-function Board() {
-    const [board, setBoard] = useState(null)
+export const BOARD_ID = '689aeef56575c0d001cdb253'
 
-    const fetchBoardData = async (boardId) => {
-        const board = await boardApi.fetchBoardDetail(boardId)
-        setBoard(board.data)
-    }
+function Board() {
+    const board = useFetchBoardStore((state) => state.board)
+    const fetchBoard = useFetchBoardStore((state) => state.fetchData)
 
     useEffect(() => {
-        const boardId = '689aeef56575c0d001cdb253'
-        fetchBoardData(boardId)
+        fetchBoard()
     }, [])
 
     return (
         <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
             <AppBar />
             <BoardBar board={board} />
-            <BoardContent board={mockData.board} />
+            <BoardContent board={board} />
         </Container>
     )
 }

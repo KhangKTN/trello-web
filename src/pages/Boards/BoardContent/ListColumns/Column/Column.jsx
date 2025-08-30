@@ -1,12 +1,26 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { AddCard, Archive, Close, CopyAll, DeleteForever, DragHandle, ExpandMoreOutlined } from '@mui/icons-material'
+import {
+    AddCard,
+    Archive,
+    Close,
+    CopyAll,
+    DeleteForever,
+    Done,
+    DragHandle,
+    ExpandMoreOutlined
+} from '@mui/icons-material'
 import ExpandMoreSharp from '@mui/icons-material/ExpandMoreSharp'
+import { LoadingButton } from '@mui/lab'
 import { Divider, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Tooltip } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
+import boardApi from '~/apis/board.api'
+import { BOARD_ID } from '~/pages/Boards/_id'
+import useFetchBoardStore from '~/stores/useFetchBoardStore'
 import sortUtil from '~/utils/sort.util'
 import ListCard from './ListCard/ListCard'
 
@@ -20,6 +34,9 @@ const Column = ({ column }) => {
     const [anchorEl, setAnchorEl] = useState(null)
     const [isShowForm, setShowForm] = useState(false)
     const [newCardName, setNewCardName] = useState({ value: '', errMsg: '' })
+    const [isFetching, setFetching] = useState(false)
+
+    const fetchBoard = useFetchBoardStore((state) => state.fetchData)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: column._id,
@@ -53,13 +70,25 @@ const Column = ({ column }) => {
         setShowForm(!isShowForm)
     }
 
-    const addNewCard = () => {
+    const addNewCard = async () => {
         if (!newCardName.value) {
             setNewCardName({ value: '', errMsg: 'Column name is not blank' })
             return
         }
-        setNewCardName({ value: '', errMsg: '' })
-        setShowForm(false)
+
+        setFetching(true)
+        const card = { title: newCardName.value, boardId: BOARD_ID, columnId: column._id }
+
+        try {
+            const res = await boardApi.addCard(card)
+            setNewCardName({ value: '', errMsg: '' })
+            toast.success(res?.data?.message)
+            setShowForm(false)
+            fetchBoard()
+        } catch (error) {
+            toast.error(error?.response?.data?.message)
+        }
+        setFetching(false)
     }
 
     const sortedCard = sortUtil.sortArrayByOtherArray(column?.cards, column?.cardOrderIds, '_id')
@@ -147,7 +176,7 @@ const Column = ({ column }) => {
                 </Box>
                 {/* Body */}
                 {/* <ListCard /> */}
-                <ListCard cards={sortedCard} />
+                <ListCard cards={sortedCard} column={column} />
                 {/* Footer */}
                 <Box
                     sx={{
@@ -192,16 +221,19 @@ const Column = ({ column }) => {
                                 }}
                             />
                             <Box sx={{ display: 'flex', alignItems: 'center', columnGap: 1 }}>
-                                <Button
+                                <LoadingButton
+                                    loading={isFetching}
+                                    loadingPosition='start'
+                                    startIcon={<Done />}
                                     onClick={() => addNewCard()}
                                     sx={{
                                         backgroundColor: 'primary.main',
-                                        '&:hover': { backgroundColor: 'primary.main', opacity: 0.8 }
+                                        '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
                                     }}
                                     variant='contained'
                                 >
-                                    OK
-                                </Button>
+                                    <span>OK</span>
+                                </LoadingButton>
                                 <Close
                                     onClick={() => toggleShowForm()}
                                     sx={{

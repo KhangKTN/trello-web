@@ -12,9 +12,11 @@ import { arrayMove } from '@dnd-kit/sortable'
 import Box from '@mui/material/Box'
 import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import boardApi from '~/apis/board.api'
 import { MouseSensor, TouchSensor } from '~/libraries/dnd-kit-sensors'
 import formatterUtil from '~/utils/formatter.util'
 import sortUtil from '~/utils/sort.util'
+import { BOARD_ID } from '../_id'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCard/Card/Card'
 import ListColumn from './ListColumns/ListColumn'
@@ -59,7 +61,7 @@ const BoardContent = ({ board }) => {
     }, [board])
 
     const findColumnByCardId = (cardId) => {
-        return sortedColumns?.find((col) => col.cards.filter((card) => card._id === cardId).length > 0)
+        return sortedColumns?.find((col) => col.cards.some((card) => card._id === cardId))
     }
 
     const handleDragStart = (e) => {
@@ -97,7 +99,7 @@ const BoardContent = ({ board }) => {
         }
     }
 
-    const handleDragEnd = (e) => {
+    const handleDragEnd = async (e) => {
         const { active, over } = e
         if (!active || !over) return
 
@@ -152,6 +154,8 @@ const BoardContent = ({ board }) => {
                 // columnOrderIds = columnOrderIds.filter(colId => colId !== idColumnDrag)
                 // columnOrderIds.splice(idx, 0, idColumnDrag)
                 setSortedColumn(sortUtil.sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
+
+                await boardApi.updateColumnOrderIds({ boardId: BOARD_ID, columnOrderIds })
             }
         }
 
@@ -188,10 +192,11 @@ const BoardContent = ({ board }) => {
             if (nextOverColumn) {
                 // Remove card if it is exists
                 nextOverColumn.cards = nextOverColumn?.cards?.filter((c) => c._id !== cardDragId)
-                // Add new card in target column and update orderCardIds
+                // Update new columnId
                 cardDragData.columnId = columnOver._id
 
                 /*
+                    Add new card in target column and update orderCardIds
                     If column is empty (only contain card placeholder), then assign new array card
                     Else add new card into card list
                 */
@@ -237,6 +242,11 @@ const BoardContent = ({ board }) => {
         [dragItemType, sortedColumns]
     )
 
+    const componentMap = {
+        [DRAG_ITEM_TYPE.COLUMN]: <Column column={dragItemData} />,
+        [DRAG_ITEM_TYPE.CARD]: <Card card={dragItemData} />
+    }
+
     return (
         <DndContext
             onDragStart={handleDragStart}
@@ -253,13 +263,7 @@ const BoardContent = ({ board }) => {
                 }}
             >
                 <ListColumn columns={sortedColumns} />
-                <DragOverlay dropAnimation={dropAnimation}>
-                    {!dragItemType ? null : dragItemType === DRAG_ITEM_TYPE.COLUMN ? (
-                        <Column column={dragItemData} />
-                    ) : (
-                        <Card card={dragItemData} />
-                    )}
-                </DragOverlay>
+                <DragOverlay dropAnimation={dropAnimation}>{dragItemType && componentMap[dragItemType]}</DragOverlay>
             </Box>
         </DndContext>
     )

@@ -13,6 +13,7 @@ const createPlaceholderCard = (column) => {
         _id: `${column._id}-placeholder-card`,
         boardId: column.boardId,
         columnId: column._id,
+        title: 'ABC',
         isPlaceholder: true
     }
 }

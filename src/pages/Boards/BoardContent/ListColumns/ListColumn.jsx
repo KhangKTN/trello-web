@@ -1,27 +1,46 @@
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
+import { Done } from '@mui/icons-material'
 import AddchartIcon from '@mui/icons-material/Addchart'
+import LoadingButton from '@mui/lab/LoadingButton'
 import { Button, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import boardApi from '~/apis/board.api'
+import { BOARD_ID } from '~/pages/Boards/_id'
+import useFetchBoardStore from '~/stores/useFetchBoardStore'
 import Column from './Column/Column'
 
 const ListColumn = ({ columns }) => {
-    const [isShowFormCol, setShowFormCol] = useState(false)
+    const [isShowForm, setShowForm] = useState(false)
     const [newColName, setNewColName] = useState({ value: '', errMsg: '' })
+    const [isFetching, setFetching] = useState(false)
+
+    const fetchBoard = useFetchBoardStore((state) => state.fetchData)
 
     const toggleShowFormCol = () => {
-        setShowFormCol(!isShowFormCol)
+        setShowForm(!isShowForm)
     }
 
-    const addNewCol = () => {
+    const addNewCol = async () => {
         if (!newColName.value) {
             setNewColName({ value: '', errMsg: 'Column name is not blank' })
             return
         }
-        setNewColName({ value: '', errMsg: '' })
-        setShowFormCol(false)
-        toast.success('Add new Column success!')
+
+        setFetching(true)
+        const column = { title: newColName.value, boardId: BOARD_ID }
+
+        try {
+            const res = await boardApi.addColumn(column)
+            setNewColName({ value: '', errMsg: '' })
+            toast.success(res?.data?.message)
+            setShowForm(false)
+            fetchBoard()
+        } catch (error) {
+            toast.error(error?.response?.data?.message)
+        }
+        setFetching(false)
     }
 
     return (
@@ -41,7 +60,7 @@ const ListColumn = ({ columns }) => {
                     <Column key={column?._id} column={column} />
                 ))}
                 {/* Button Add new column */}
-                {isShowFormCol ? (
+                {isShowForm ? (
                     <Box
                         sx={{
                             minWidth: '250px',
@@ -85,10 +104,14 @@ const ListColumn = ({ columns }) => {
                                     '&:hover': { color: 'error.main', borderColor: 'error.main' }
                                 }}
                                 variant='outlined'
+                                disabled={isFetching}
                             >
                                 Cancel
                             </Button>
-                            <Button
+                            <LoadingButton
+                                loading={isFetching}
+                                loadingPosition='start'
+                                startIcon={<Done />}
                                 onClick={() => addNewCol()}
                                 sx={{
                                     backgroundColor: 'primary.main',
@@ -96,8 +119,8 @@ const ListColumn = ({ columns }) => {
                                 }}
                                 variant='contained'
                             >
-                                OK
-                            </Button>
+                                <span>OK</span>
+                            </LoadingButton>
                         </Box>
                     </Box>
                 ) : (
