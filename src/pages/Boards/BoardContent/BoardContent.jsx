@@ -133,6 +133,14 @@ const BoardContent = ({ board }) => {
                     nextColumns[idxColumn].cardOrderIds = cardOrderIds
                     return nextColumns
                 })
+
+                // Update in db
+                await boardApi.updateCardOrderIds({
+                    cardId: cardDragId,
+                    sourceColumnId: columnOver._id,
+                    targetColumnId: columnOver._id,
+                    cardOrderIds: cardOrderIds
+                })
             } else {
                 moveCardToOtherColumn(columnRoot, columnOver, overId, active, over, cardDragId, cardDragData)
             }

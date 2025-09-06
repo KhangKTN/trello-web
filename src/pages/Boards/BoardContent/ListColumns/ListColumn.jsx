@@ -8,7 +8,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import boardApi from '~/apis/board.api'
 import { BOARD_ID } from '~/pages/Boards/_id'
-import useFetchBoardStore from '~/stores/useFetchBoardStore'
+import useBoardStore from '~/stores/useBoardStore'
 import Column from './Column/Column'
 
 const ListColumn = ({ columns }) => {
@@ -16,7 +16,7 @@ const ListColumn = ({ columns }) => {
     const [newColName, setNewColName] = useState({ value: '', errMsg: '' })
     const [isFetching, setFetching] = useState(false)
 
-    const fetchBoard = useFetchBoardStore((state) => state.fetchData)
+    const addColumn = useBoardStore((state) => state.addColumn)
 
     const toggleShowFormCol = () => {
         setShowForm(!isShowForm)
@@ -33,14 +33,16 @@ const ListColumn = ({ columns }) => {
 
         try {
             const res = await boardApi.addColumn(column)
-            setNewColName({ value: '', errMsg: '' })
             toast.success(res?.data?.message)
+            addColumn(res?.data?.data)
+
+            setNewColName({ value: '', errMsg: '' })
             setShowForm(false)
-            fetchBoard()
         } catch (error) {
             toast.error(error?.response?.data?.message)
+        } finally {
+            setFetching(false)
         }
-        setFetching(false)
     }
 
     return (

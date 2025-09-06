@@ -1,7 +1,7 @@
 import Container from '@mui/material/Container'
 import { useEffect } from 'react'
 import AppBar from '~/components/AppBar/AppBar'
-import useFetchBoardStore from '~/stores/useFetchBoardStore'
+import useFetchBoardStore from '~/stores/useBoardStore'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 

@@ -24,4 +24,13 @@ const updateColumnOrderIds = async (data) => {
     return await axios.put(`${API_HOST}/v1/board/update-column-order-ids`, data)
 }
 
-export default { fetchBoardDetail, addColumn, addCard, updateColumnOrderIds }
+const updateCardOrderIds = async ({ cardId, sourceColumnId, targetColumnId, cardOrderIds }) => {
+    return await axios.put(`${API_HOST}/v1/column/update-card-order-ids`, {
+        cardId,
+        sourceColumnId,
+        targetColumnId,
+        cardOrderIds
+    })
+}
+
+export default { fetchBoardDetail, addColumn, addCard, updateColumnOrderIds, updateCardOrderIds }

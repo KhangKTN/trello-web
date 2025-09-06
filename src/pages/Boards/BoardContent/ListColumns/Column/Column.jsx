@@ -20,7 +20,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import boardApi from '~/apis/board.api'
 import { BOARD_ID } from '~/pages/Boards/_id'
-import useFetchBoardStore from '~/stores/useFetchBoardStore'
+import useBoardStore from '~/stores/useBoardStore'
 import sortUtil from '~/utils/sort.util'
 import ListCard from './ListCard/ListCard'
 
@@ -36,7 +36,7 @@ const Column = ({ column }) => {
     const [newCardName, setNewCardName] = useState({ value: '', errMsg: '' })
     const [isFetching, setFetching] = useState(false)
 
-    const fetchBoard = useFetchBoardStore((state) => state.fetchData)
+    const addCard = useBoardStore((state) => state.addCard)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: column._id,
@@ -81,14 +81,16 @@ const Column = ({ column }) => {
 
         try {
             const res = await boardApi.addCard(card)
-            setNewCardName({ value: '', errMsg: '' })
             toast.success(res?.data?.message)
+            addCard(res?.data?.data)
+
+            setNewCardName({ value: '', errMsg: '' })
             setShowForm(false)
-            fetchBoard()
         } catch (error) {
             toast.error(error?.response?.data?.message)
+        } finally {
+            setFetching(false)
         }
-        setFetching(false)
     }
 
     const sortedCard = sortUtil.sortArrayByOtherArray(column?.cards, column?.cardOrderIds, '_id')
