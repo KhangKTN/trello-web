@@ -99,7 +99,7 @@ const BoardContent = ({ board }) => {
         }
     }
 
-    const handleDragEnd = async (e) => {
+    const handleDragEnd = (e) => {
         const { active, over } = e
         if (!active || !over) return
 
@@ -135,7 +135,7 @@ const BoardContent = ({ board }) => {
                 })
 
                 // Update in db
-                await boardApi.updateCardOrderIds({
+                boardApi.updateCardOrderIds({
                     cardId: cardDragId,
                     sourceColumnId: columnOver._id,
                     targetColumnId: columnOver._id,
@@ -157,13 +157,13 @@ const BoardContent = ({ board }) => {
                     columnOrderIds.indexOf(idColumnDrag),
                     columnOrderIds.indexOf(idColumnDrop)
                 )
-                // Sort array use splice
+                // Sort array use js splice
                 // const idx = columnOrderIds.indexOf(idColumnDrop)
                 // columnOrderIds = columnOrderIds.filter(colId => colId !== idColumnDrag)
                 // columnOrderIds.splice(idx, 0, idColumnDrag)
                 setSortedColumn(sortUtil.sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
 
-                await boardApi.updateColumnOrderIds({ boardId: BOARD_ID, columnOrderIds })
+                boardApi.updateColumnOrderIds({ boardId: BOARD_ID, columnOrderIds })
             }
         }
 
@@ -216,6 +216,13 @@ const BoardContent = ({ board }) => {
                     nextOverColumn.cardOrderIds = nextOverColumn?.cards?.map((c) => c._id)
                 }
             }
+
+            boardApi.updateCardOrderIds({
+                card: cardDragData,
+                sourceColumnId: columnRoot._id,
+                targetColumnId: columnOver._id,
+                cardOrderIds: nextOverColumn?.cards?.map((c) => c._id)
+            })
             return nextColumns
         })
     }

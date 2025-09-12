@@ -21,6 +21,7 @@ import toast from 'react-hot-toast'
 import boardApi from '~/apis/board.api'
 import { BOARD_ID } from '~/pages/Boards/_id'
 import useBoardStore from '~/stores/useBoardStore'
+import useLastCardAddedStore from '~/stores/useColumnsAddCardStore'
 import sortUtil from '~/utils/sort.util'
 import ListCard from './ListCard/ListCard'
 
@@ -37,6 +38,7 @@ const Column = ({ column }) => {
     const [isFetching, setFetching] = useState(false)
 
     const addCard = useBoardStore((state) => state.addCard)
+    const changeColumnIds = useLastCardAddedStore((state) => state.changeColumnIds)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: column._id,
@@ -47,7 +49,7 @@ const Column = ({ column }) => {
         }
     })
 
-    // Use css for element is draging
+    // Use css for element is dragging
     const dndKitColumnStyle = {
         height: '100%',
         transform: CSS.Translate.toString(transform),
@@ -83,6 +85,7 @@ const Column = ({ column }) => {
             const res = await boardApi.addCard(card)
             toast.success(res?.data?.message)
             addCard(res?.data?.data)
+            changeColumnIds(column._id)
 
             setNewCardName({ value: '', errMsg: '' })
             setShowForm(false)
@@ -178,7 +181,7 @@ const Column = ({ column }) => {
                 </Box>
                 {/* Body */}
                 {/* <ListCard /> */}
-                <ListCard cards={sortedCard} column={column} />
+                <ListCard cards={sortedCard} />
                 {/* Footer */}
                 <Box
                     sx={{

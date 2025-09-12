@@ -15,25 +15,29 @@ const useBoardStore = create((set) => ({
     },
     addColumn: (column) =>
         set((state) => {
-            const newBoard = { ...state.board }
-            const cardEmpty = formatterUtil.createPlaceholderCard(column)
+            const board = { ...state.board }
+
+            // Create hidden card to can drag and drop from other column
+            const hiddenCard = formatterUtil.createPlaceholderCard(column)
             const newColumn = {
                 ...column,
-                cards: [cardEmpty],
-                cardOrderIds: [cardEmpty._id]
+                cards: [hiddenCard],
+                cardOrderIds: [hiddenCard._id]
             }
 
-            newBoard.columns.push(newColumn)
-            newBoard.columnOrderIds.push(newColumn._id)
+            board.columns.push(newColumn)
+            board.columnOrderIds.push(newColumn._id)
 
-            return { board: newBoard }
+            return { board }
         }),
     addCard: (card) =>
         set((state) => {
             const newBoard = { ...state.board }
             const columnContainCard = newBoard.columns.find((col) => col._id === card.columnId)
+
             columnContainCard.cards.push(card)
             columnContainCard.cardOrderIds.push(card._id)
+
             return { board: newBoard }
         })
 }))

@@ -1,43 +1,43 @@
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import { Done } from '@mui/icons-material'
 import AddchartIcon from '@mui/icons-material/Addchart'
-import LoadingButton from '@mui/lab/LoadingButton'
+import { LoadingButton } from '@mui/lab'
 import { Button, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import boardApi from '~/apis/board.api'
-import { BOARD_ID } from '~/pages/Boards/_id'
 import useBoardStore from '~/stores/useBoardStore'
+import { BOARD_ID } from '../../_id'
 import Column from './Column/Column'
 
 const ListColumn = ({ columns }) => {
+    const [tittle, setTitle] = useState({ value: '', errMsg: '' })
     const [isShowForm, setShowForm] = useState(false)
-    const [newColName, setNewColName] = useState({ value: '', errMsg: '' })
     const [isFetching, setFetching] = useState(false)
 
     const addColumn = useBoardStore((state) => state.addColumn)
 
-    const toggleShowFormCol = () => {
+    const toggleShowForm = () => {
         setShowForm(!isShowForm)
     }
 
-    const addNewCol = async () => {
-        if (!newColName.value) {
-            setNewColName({ value: '', errMsg: 'Column name is not blank' })
+    const addNewColumn = async () => {
+        if (!tittle.value) {
+            setTitle({ value: '', errMsg: 'Column name is not blank' })
             return
         }
 
         setFetching(true)
-        const column = { title: newColName.value, boardId: BOARD_ID }
+        const column = { title: tittle.value, boardId: BOARD_ID }
 
         try {
             const res = await boardApi.addColumn(column)
             toast.success(res?.data?.message)
             addColumn(res?.data?.data)
 
-            setNewColName({ value: '', errMsg: '' })
-            setShowForm(false)
+            setTitle({ value: '', errMsg: '' })
+            toggleShowForm()
         } catch (error) {
             toast.error(error?.response?.data?.message)
         } finally {
@@ -80,10 +80,10 @@ const ListColumn = ({ columns }) => {
                             type='text'
                             size='small'
                             autoFocus
-                            value={newColName.value}
-                            onChange={(e) => setNewColName({ value: e.target.value, errMsg: '' })}
-                            error={Boolean(newColName.errMsg)}
-                            helperText={newColName.errMsg}
+                            value={tittle.value}
+                            onChange={(e) => setTitle({ value: e.target.value, errMsg: '' })}
+                            error={Boolean(tittle.errMsg)}
+                            helperText={tittle.errMsg}
                             sx={{
                                 width: '100%',
                                 marginLeft: { xs: '12px', sm: 0 },
@@ -99,7 +99,7 @@ const ListColumn = ({ columns }) => {
                         />
                         <Box sx={{ display: 'flex', justifyContent: 'end', columnGap: 2, mt: 2 }}>
                             <Button
-                                onClick={() => toggleShowFormCol()}
+                                onClick={() => toggleShowForm()}
                                 sx={{
                                     color: 'error.light',
                                     borderColor: 'error.light',
@@ -114,7 +114,7 @@ const ListColumn = ({ columns }) => {
                                 loading={isFetching}
                                 loadingPosition='start'
                                 startIcon={<Done />}
-                                onClick={() => addNewCol()}
+                                onClick={() => addNewColumn()}
                                 sx={{
                                     backgroundColor: 'primary.main',
                                     '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
@@ -138,7 +138,7 @@ const ListColumn = ({ columns }) => {
                         }}
                     >
                         <Button
-                            onClick={() => toggleShowFormCol()}
+                            onClick={() => toggleShowForm()}
                             sx={{ color: 'white', width: '100%', py: 1 }}
                             startIcon={<AddchartIcon />}
                         >
