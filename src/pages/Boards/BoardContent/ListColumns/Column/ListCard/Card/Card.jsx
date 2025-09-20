@@ -1,14 +1,17 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import InsertCommentIcon from '@mui/icons-material/InsertComment'
+import ModeEditOutline from '@mui/icons-material/ModeEditOutline'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 import ShareIcon from '@mui/icons-material/Share'
-import { Card as MuiCard } from '@mui/material'
 import Button from '@mui/material/Button'
+import MuiCard from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import useCardModal from '~/stores/useCardModal'
 
 const stylePlaceholder = {
     border: '2.5px dashed #673ab7',
@@ -17,6 +20,8 @@ const stylePlaceholder = {
 }
 
 const Card = ({ hideMedia, card }) => {
+    const changeCardStore = useCardModal((state) => state.change)
+
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: card._id,
         data: { ...card },
@@ -75,13 +80,12 @@ const Card = ({ hideMedia, card }) => {
                 }
             }}
         >
-            {card.cover && (
+            {card.image && (
                 <CardMedia
-                    sx={{ borderRadius: '4px 4px 0 0' }}
+                    sx={{ borderRadius: '4px 4px 0 0', height: 'auto', aspectRatio: '16/9' }}
                     component='img'
                     alt='card-img'
-                    height='140'
-                    image='https://media.bongda.com.vn/editor-upload/2024-7-22/phan_nguyen_hoai_thu/thumb_133455_default_news_size_5.jpeg'
+                    image={card.image}
                 />
             )}
             <CardContent>
@@ -94,14 +98,22 @@ const Card = ({ hideMedia, card }) => {
             </CardContent>
             <CardActions sx={{ p: '0 4px 8px 4px' }}>
                 <Button size='small' sx={{ color: 'primary.text' }} startIcon={<PeopleOutlineIcon />}>
-                    {card?.memberIds?.length}
+                    {card?.memberIds?.length ?? 0}
                 </Button>
                 <Button size='small' sx={{ color: 'primary.text' }} startIcon={<InsertCommentIcon />}>
-                    {card?.comments?.length}
+                    {card?.comments?.length ?? 0}
                 </Button>
-                <Button size='small' sx={{ color: 'primary.text' }} startIcon={<ShareIcon />}>
-                    {card?.attachments?.length}
-                </Button>
+                <Tooltip title='Edit'>
+                    <Button
+                        onClick={() => changeCardStore({ isOpen: true, columnId: card.columnId, card: card })}
+                        size='small'
+                        sx={{ color: 'primary.text' }}
+                        // startIcon={<ModeEditOutline />}
+                    >
+                        {/* Edit */}
+                        <ModeEditOutline sx={{ width: '18px', height: '18px' }} />
+                    </Button>
+                </Tooltip>
             </CardActions>
         </MuiCard>
     )

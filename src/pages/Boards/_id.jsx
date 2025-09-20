@@ -1,3 +1,5 @@
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
 import { useEffect } from 'react'
 import AppBar from '~/components/AppBar/AppBar'
@@ -19,7 +21,13 @@ function Board() {
         <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
             <AppBar />
             <BoardBar board={board} />
-            <BoardContent board={board} />
+            {board ? (
+                <BoardContent board={board} />
+            ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+                    <CircularProgress />
+                </Box>
+            )}
         </Container>
     )
 }

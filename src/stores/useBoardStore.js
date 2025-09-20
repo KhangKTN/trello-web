@@ -39,6 +39,25 @@ const useBoardStore = create((set) => ({
             columnContainCard.cardOrderIds.push(card._id)
 
             return { board: newBoard }
+        }),
+    updateCard: (card) =>
+        set((state) => {
+            const newBoard = { ...state.board }
+
+            newBoard.columns = newBoard.columns.map((col) => {
+                if (col._id !== card.columnId) {
+                    return col
+                }
+
+                return {
+                    ...col,
+                    cards: col.cards.map((cardItem) =>
+                        cardItem._id === card._id ? { ...cardItem, title: card.title, image: card.image } : cardItem
+                    )
+                }
+            })
+
+            return { board: newBoard }
         })
 }))
 

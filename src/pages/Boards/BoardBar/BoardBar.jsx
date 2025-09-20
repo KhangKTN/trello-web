@@ -4,12 +4,12 @@ import DashboardCustomize from '@mui/icons-material/DashboardCustomize'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import LockIcon from '@mui/icons-material/Lock'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { Tooltip } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import Tooltip from '@mui/material/Tooltip'
 import formatterUtil from '~/utils/formatter.util'
 
 const MENU_STYLE = {

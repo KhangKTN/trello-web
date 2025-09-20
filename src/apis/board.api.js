@@ -5,6 +5,9 @@ import { API_HOST } from '~/utils/constant.util'
 const TIMEOUT_CALL_IN_MILISECOND = 1000
 
 const fetchBoardDetail = async (boardId) => {
+    await new Promise((resolve) => {
+        setTimeout(resolve, TIMEOUT_CALL_IN_MILISECOND)
+    })
     const res = await axios.get(`${API_HOST}/v1/board/${boardId}`)
     return res.data
 }
@@ -36,4 +39,6 @@ const updateCardOrderIds = async ({ card, sourceColumnId, targetColumnId, cardOr
     })
 }
 
-export default { fetchBoardDetail, addColumn, addCard, updateColumnOrderIds, updateCardOrderIds }
+const updateCard = async (data) => await axios.put(`${API_HOST}/v1/card`, data)
+
+export default { fetchBoardDetail, addColumn, addCard, updateColumnOrderIds, updateCardOrderIds, updateCard }

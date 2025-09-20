@@ -13,6 +13,7 @@ import Box from '@mui/material/Box'
 import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import boardApi from '~/apis/board.api'
+import AddCardModal from '~/components/Modal/AddColumnModal/AddCardModal'
 import { MouseSensor, TouchSensor } from '~/libraries/dnd-kit-sensors'
 import formatterUtil from '~/utils/formatter.util'
 import sortUtil from '~/utils/sort.util'
@@ -136,7 +137,7 @@ const BoardContent = ({ board }) => {
 
                 // Update in db
                 boardApi.updateCardOrderIds({
-                    cardId: cardDragId,
+                    card: cardDragData,
                     sourceColumnId: columnOver._id,
                     targetColumnId: columnOver._id,
                     cardOrderIds: cardOrderIds
@@ -163,7 +164,7 @@ const BoardContent = ({ board }) => {
                 // columnOrderIds.splice(idx, 0, idColumnDrag)
                 setSortedColumn(sortUtil.sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
 
-                boardApi.updateColumnOrderIds({ boardId: BOARD_ID, columnOrderIds })
+                boardApi.updateColumnOrderIds({ _id: BOARD_ID, columnOrderIds })
             }
         }
 
@@ -263,24 +264,29 @@ const BoardContent = ({ board }) => {
     }
 
     return (
-        <DndContext
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-            sensors={sensors}
-            collisionDetection={collisionDetectionStratery} // Collision detection algorithm, fix case cannot drag card large
-        >
-            <Box
-                sx={{
-                    backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#d1c4e9' : '#49535f'),
-                    height: (theme) => theme.appLayout.boardContentHeight,
-                    padding: '8px 0'
-                }}
+        <>
+            <AddCardModal />
+            <DndContext
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+                sensors={sensors}
+                collisionDetection={collisionDetectionStratery} // Collision detection algorithm, fix case cannot drag card large
             >
-                <ListColumn columns={sortedColumns} />
-                <DragOverlay dropAnimation={dropAnimation}>{dragItemType && componentMap[dragItemType]}</DragOverlay>
-            </Box>
-        </DndContext>
+                <Box
+                    sx={{
+                        backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#d1c4e9' : '#49535f'),
+                        height: (theme) => theme.appLayout.boardContentHeight,
+                        padding: '8px 0'
+                    }}
+                >
+                    <ListColumn columns={sortedColumns} />
+                    <DragOverlay dropAnimation={dropAnimation}>
+                        {dragItemType && componentMap[dragItemType]}
+                    </DragOverlay>
+                </Box>
+            </DndContext>
+        </>
     )
 }
 

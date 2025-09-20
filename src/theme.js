@@ -43,14 +43,13 @@ const theme = extendTheme({
                         height: '6px'
                     },
                     '*::-webkit-scrollbar-thumb': {
-                        background: 'gray',
+                        background: '#a3a3a3',
                         borderRadius: '8px',
                         backdropFilter: 'blur(8px)'
                     },
                     '*::-webkit-scrollbar-thumb:hover': {
-                        background: 'linear-gradient(to right, #FED9ED, #E7BCDE)',
-                        borderRadius: '8px',
-                        backdropFilter: 'blur(8px)'
+                        background: 'gray',
+                        borderRadius: '8px'
                     }
                 }
             }
