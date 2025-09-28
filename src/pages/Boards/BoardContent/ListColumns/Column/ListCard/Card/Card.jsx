@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import DeleteForeverOutlined from '@mui/icons-material/DeleteForeverOutlined'
 import InsertCommentIcon from '@mui/icons-material/InsertComment'
 import ModeEditOutline from '@mui/icons-material/ModeEditOutline'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
@@ -11,6 +12,7 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import useBoardStore from '~/stores/useBoardStore'
 import useCardModal from '~/stores/useCardModal'
 
 const stylePlaceholder = {
@@ -21,6 +23,7 @@ const stylePlaceholder = {
 
 const Card = ({ hideMedia, card }) => {
     const changeCardStore = useCardModal((state) => state.change)
+    const deleteCard = useBoardStore((state) => state.deleteCard)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: card._id,
@@ -36,6 +39,13 @@ const Card = ({ hideMedia, card }) => {
         transition,
         ...(isDragging && stylePlaceholder)
         // touchAction: 'none'
+    }
+
+    const handleDeleteCard = () => {
+        const isConfirm = window.confirm('Do you want delete card?')
+        if (isConfirm) {
+            deleteCard(card)
+        }
     }
 
     return hideMedia ? (
@@ -80,14 +90,14 @@ const Card = ({ hideMedia, card }) => {
                 }
             }}
         >
-            {card.image && (
+            {card?.image ? (
                 <CardMedia
                     sx={{ borderRadius: '4px 4px 0 0', height: 'auto', aspectRatio: '16/9' }}
                     component='img'
                     alt='card-img'
                     image={card.image}
                 />
-            )}
+            ) : null}
             <CardContent>
                 <Typography variant='h6' sx={{ fontSize: '1rem' }} component='div'>
                     {card?.title}
@@ -112,6 +122,11 @@ const Card = ({ hideMedia, card }) => {
                     >
                         {/* Edit */}
                         <ModeEditOutline sx={{ width: '18px', height: '18px' }} />
+                    </Button>
+                </Tooltip>
+                <Tooltip title='Delete'>
+                    <Button onClick={() => handleDeleteCard()} size='small' sx={{ color: 'primary.text' }}>
+                        <DeleteForeverOutlined sx={{ width: '18px', height: '18px' }} />
                     </Button>
                 </Tooltip>
             </CardActions>

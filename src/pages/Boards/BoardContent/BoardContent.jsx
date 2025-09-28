@@ -44,7 +44,8 @@ const BoardContent = ({ board }) => {
     const [dragItemType, setDragItemType] = useState(null)
     const [dragItemData, setDragItemData] = useState(null)
 
-    const [lastColumnDragCard, setLastColumnDragCard] = useState(null)
+    // First column contain card when drag
+    const [sourceColumnDragCard, setSourceColumnDragCard] = useState(null)
     const lastOverId = useRef(null)
 
     // If use pointerSensor, must be use "touchAction: 'none'" for element dnd - [exists bug]
@@ -56,6 +57,8 @@ const BoardContent = ({ board }) => {
     // Press hold 250ms and tolerance 5 to emit event
     const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
     const sensors = useSensors(mouseSensor, touchSensor)
+
+    // console.log(sortedColumns[1])
 
     useEffect(() => {
         setSortedColumn(sortUtil.sortArrayByOtherArray(board?.columns, board?.columnOrderIds, '_id'))
@@ -76,10 +79,13 @@ const BoardContent = ({ board }) => {
 
         // Save columnRoot contain card if element drag is card
         if (dataEvent?.columnId) {
-            setLastColumnDragCard(findColumnByCardId(elementId))
+            setSourceColumnDragCard(findColumnByCardId(elementId))
         }
     }
 
+    /**
+     * Handle drag card over other column
+     */
     const handleDragOver = (e) => {
         if (dragItemType === DRAG_ITEM_TYPE.COLUMN) return
         const { active, over } = e
@@ -92,6 +98,7 @@ const BoardContent = ({ board }) => {
         const { id: overId } = over
         const columnRoot = findColumnByCardId(cardDragId)
         const columnOver = findColumnByCardId(overId)
+
         if (!columnRoot || !columnOver) return
 
         // Only handle for case: Drag card to other column
@@ -120,17 +127,15 @@ const BoardContent = ({ board }) => {
                 If drag card in a column, only rearrange order of cards
                 Otherwise, must remove card in root column and add it into new column (target column)
             */
-            if (lastColumnDragCard._id === columnOver._id) {
+            if (sourceColumnDragCard._id === columnOver._id) {
                 // Get order of cards current and rearrange
-                let cardOrderIds = columnRoot?.cards?.map((c) => c._id)
+                let cardOrderIds = columnOver.cardOrderIds
                 cardOrderIds = arrayMove(cardOrderIds, cardOrderIds.indexOf(cardDragId), cardOrderIds.indexOf(overId))
-                const newCardSort = sortUtil.sortArrayByOtherArray([...columnRoot.cards], cardOrderIds, '_id')
-                const idxColumn = sortedColumns.findIndex((col) => col._id === columnRoot._id)
+                const idxColumn = sortedColumns.findIndex((col) => col._id === columnOver._id)
 
                 // Set orderIds and cards for column occur event
                 setSortedColumn((oldColumns) => {
                     const nextColumns = cloneDeep(oldColumns)
-                    nextColumns[idxColumn].cards = newCardSort
                     nextColumns[idxColumn].cardOrderIds = cardOrderIds
                     return nextColumns
                 })
@@ -143,7 +148,7 @@ const BoardContent = ({ board }) => {
                     cardOrderIds: cardOrderIds
                 })
             } else {
-                moveCardToOtherColumn(columnRoot, columnOver, overId, active, over, cardDragId, cardDragData)
+                moveCardToOtherColumn(columnRoot, columnOver, overId, active, over, cardDragId, cardDragData, true)
             }
         }
 
@@ -152,7 +157,6 @@ const BoardContent = ({ board }) => {
             const idColumnDrop = over?.id
             if (idColumnDrag && idColumnDrop && idColumnDrag !== idColumnDrop) {
                 let columnOrderIds = sortedColumns.map((col) => col._id)
-                // Sort array use lib
                 columnOrderIds = arrayMove(
                     columnOrderIds,
                     columnOrderIds.indexOf(idColumnDrag),
@@ -171,10 +175,19 @@ const BoardContent = ({ board }) => {
         setDragItemId(null)
         setDragItemType(null)
         setDragItemData(null)
-        setLastColumnDragCard(null)
+        setSourceColumnDragCard(null)
     }
 
-    const moveCardToOtherColumn = (columnRoot, columnOver, overId, active, over, cardDragId, cardDragData) => {
+    const moveCardToOtherColumn = (
+        columnRoot,
+        columnOver,
+        overId,
+        active,
+        over,
+        cardDragId,
+        cardDragData,
+        isDragEnd
+    ) => {
         setSortedColumn((prevColumns) => {
             const nextColumns = cloneDeep(prevColumns)
             const nextRootColumn = nextColumns?.find((c) => c._id === columnRoot._id)
@@ -187,17 +200,18 @@ const BoardContent = ({ board }) => {
             const modifier = isBelowOverItem ? 1 : 0
             let newCardIdx = overCardIdx >= 0 ? overCardIdx + modifier : columnOver?.cards?.length + 1
 
-            if (nextRootColumn) {
-                // Remove card from root column contain card is dragged
+            // Remove card from root column contain card is dragged
+            if (nextRootColumn && columnRoot._id !== columnOver._id) {
                 nextRootColumn.cards = nextRootColumn?.cards?.filter((c) => c._id !== cardDragId)
                 nextRootColumn.cardOrderIds = nextRootColumn?.cards?.map((c) => c._id)
 
                 // If card dragged is last item of the column, then add new empty card (placeholder-card)
-                if (!nextRootColumn.cards?.length) {
+                if (!nextRootColumn?.cards?.length) {
                     nextRootColumn.cards = [formatterUtil.createPlaceholderCard(nextRootColumn)]
                     nextRootColumn.cardOrderIds = [`${nextRootColumn._id}-placeholder-card`]
                 }
             }
+            // Add card to target column
             if (nextOverColumn) {
                 // Remove card if it is exists
                 nextOverColumn.cards = nextOverColumn?.cards?.filter((c) => c._id !== cardDragId)
@@ -218,12 +232,16 @@ const BoardContent = ({ board }) => {
                 }
             }
 
-            boardApi.updateCardOrderIds({
-                card: cardDragData,
-                sourceColumnId: columnRoot._id,
-                targetColumnId: columnOver._id,
-                cardOrderIds: nextOverColumn?.cards?.map((c) => c._id)
-            })
+            // Api update orderIds
+            if (isDragEnd) {
+                boardApi.updateCardOrderIds({
+                    card: { ...cardDragData, columnId: columnOver._id },
+                    sourceColumnId: sourceColumnDragCard._id,
+                    targetColumnId: columnOver._id,
+                    cardOrderIds: nextOverColumn.cardOrderIds
+                })
+            }
+
             return nextColumns
         })
     }

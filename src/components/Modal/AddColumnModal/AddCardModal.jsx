@@ -28,7 +28,7 @@ const style = {
 
 const AddCardModal = () => {
     const [tittle, setTitle] = useState({ value: '', errMsg: '' })
-    const [img, setImg] = useState('')
+    const [image, setImg] = useState('')
     const [isFetching, setFetching] = useState(false)
 
     const { addCard, updateCard } = useBoardStore((state) => state)
@@ -42,36 +42,39 @@ const AddCardModal = () => {
         change: changeCardModal
     } = useCardModal((state) => state)
 
-    const addNewCard = async () => {
+    /**
+     * If card contain id then handle update card
+     * Otherwise add new card
+     */
+    const addOrUpdateCard = async () => {
         if (!tittle.value.trim()) {
-            setTitle({ value: '', errMsg: 'Column title is not blank' })
+            setTitle({ value: '', errMsg: 'Title is not blank' })
             return
         }
-
         setFetching(true)
 
         try {
             let res = null
-            if (cardData._id) {
+            if (cardData?._id) {
                 const card = {
                     _id: cardData._id,
                     title: tittle.value,
                     boardId: BOARD_ID,
-                    columnId: columnId,
-                    image: img
+                    columnId,
+                    image: image
                 }
-                // Call api update card
                 res = await boardApi.updateCard(card)
+
+                // Update card in state
                 updateCard(res?.data?.data)
             } else {
-                const card = { title: tittle.value, boardId: BOARD_ID, columnId: columnId, image: img }
-                // Call api update
+                const card = { title: tittle.value, boardId: BOARD_ID, columnId, image }
                 res = await boardApi.addCard(card)
-                // Update store
+
+                // Add card in state
                 addCard(res?.data?.data)
                 changeColumnIds(columnId)
             }
-
             toast.success(res?.data?.message)
 
             setTitle({ value: '', errMsg: '' })
@@ -85,10 +88,8 @@ const AddCardModal = () => {
     }
 
     useEffect(() => {
-        if (cardData) {
-            setTitle({ value: cardData.title, errMsg: '' })
-            setImg(cardData.image ?? '')
-        }
+        setTitle({ value: cardData?.title ?? '', errMsg: '' })
+        setImg(cardData?.image ?? '')
     }, [cardData])
 
     return (
@@ -100,7 +101,7 @@ const AddCardModal = () => {
         >
             <Box sx={style}>
                 <Typography id='modal-modal-title' variant='h6' component='h2'>
-                    {cardData?._id ? 'Update' : 'Add'} column
+                    {cardData?._id ? 'Update' : 'Add'} card
                 </Typography>
                 <TextField
                     label='Title'
@@ -129,7 +130,7 @@ const AddCardModal = () => {
                     label='Image link'
                     type='text'
                     size='small'
-                    value={img}
+                    value={image}
                     onChange={(e) => setImg(e.target.value)}
                     // error={Boolean(newColName.errMsg)}
                     // helperText={newColName.errMsg}
@@ -162,9 +163,9 @@ const AddCardModal = () => {
                         alignItems: 'center'
                     }}
                 >
-                    {img ? (
+                    {image ? (
                         <img
-                            src={img}
+                            src={image}
                             style={{
                                 width: '100%',
                                 height: 'auto',
@@ -195,7 +196,7 @@ const AddCardModal = () => {
                         loading={isFetching}
                         loadingPosition='start'
                         startIcon={<Done />}
-                        onClick={() => addNewCard()}
+                        onClick={() => addOrUpdateCard()}
                         sx={{
                             backgroundColor: 'primary.main',
                             '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
