@@ -17,6 +17,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
+import useBoardStore from '~/stores/useBoardStore'
 import useCardModal from '~/stores/useCardModal'
 import sortUtil from '~/utils/sort.util'
 import ListCard from './ListCard/ListCard'
@@ -30,6 +31,7 @@ const stylePlaceholder = {
 const Column = ({ column }) => {
     const [anchorEl, setAnchorEl] = useState(null)
     const changeModal = useCardModal((state) => state.change)
+    const useBoard = useBoardStore((state) => state)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: column._id,
@@ -57,6 +59,10 @@ const Column = ({ column }) => {
 
     const handleClose = () => {
         setAnchorEl(null)
+    }
+
+    const handleRemoveColumn = () => {
+        useBoard.deleteColumn(column._id)
     }
 
     const sortedCard = sortUtil.sortArrayByOtherArray(column?.cards, column?.cardOrderIds, '_id')
@@ -127,7 +133,7 @@ const Column = ({ column }) => {
                                 <ListItemText>Copy</ListItemText>
                             </MenuItem>
                             <Divider />
-                            <MenuItem>
+                            <MenuItem onClick={handleRemoveColumn}>
                                 <ListItemIcon>
                                     <DeleteForever fontSize='small' />
                                 </ListItemIcon>

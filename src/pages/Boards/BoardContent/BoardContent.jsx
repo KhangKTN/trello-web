@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import boardApi from '~/apis/board.api'
 import AddCardModal from '~/components/Modal/AddColumnModal/AddCardModal'
 import { MouseSensor, TouchSensor } from '~/libraries/dnd-kit-sensors'
+import useBoardStore from '~/stores/useBoardStore'
 import formatterUtil from '~/utils/formatter.util'
 import sortUtil from '~/utils/sort.util'
 import { BOARD_ID } from '../_id'
@@ -58,7 +59,7 @@ const BoardContent = ({ board }) => {
     const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
     const sensors = useSensors(mouseSensor, touchSensor)
 
-    // console.log(sortedColumns[1])
+    const boardState = useBoardStore((state) => state)
 
     useEffect(() => {
         setSortedColumn(sortUtil.sortArrayByOtherArray(board?.columns, board?.columnOrderIds, '_id'))
@@ -137,6 +138,8 @@ const BoardContent = ({ board }) => {
                 setSortedColumn((oldColumns) => {
                     const nextColumns = cloneDeep(oldColumns)
                     nextColumns[idxColumn].cardOrderIds = cardOrderIds
+                    boardState.updateBoard({ columns: nextColumns })
+
                     return nextColumns
                 })
 
@@ -166,8 +169,9 @@ const BoardContent = ({ board }) => {
                 // const idx = columnOrderIds.indexOf(idColumnDrop)
                 // columnOrderIds = columnOrderIds.filter(colId => colId !== idColumnDrag)
                 // columnOrderIds.splice(idx, 0, idColumnDrag)
-                setSortedColumn(sortUtil.sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
 
+                setSortedColumn(sortUtil.sortArrayByOtherArray([...sortedColumns], columnOrderIds, '_id'))
+                boardState.updateBoard({ columnOrderIds })
                 boardApi.updateColumnOrderIds({ _id: BOARD_ID, columnOrderIds })
             }
         }
@@ -232,8 +236,9 @@ const BoardContent = ({ board }) => {
                 }
             }
 
-            // Api update orderIds
+            // Update columns in board state and save db
             if (isDragEnd) {
+                boardState.updateBoard({ columns: nextColumns })
                 boardApi.updateCardOrderIds({
                     card: { ...cardDragData, columnId: columnOver._id },
                     sourceColumnId: sourceColumnDragCard._id,

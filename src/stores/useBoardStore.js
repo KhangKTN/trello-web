@@ -13,6 +13,11 @@ const useBoardStore = create((set) => ({
             set({ board: null })
         }
     },
+    updateBoard: (data) =>
+        set((state) => {
+            const newBoard = { ...state.board, ...data }
+            return { board: newBoard }
+        }),
 
     // Column
     addColumn: (column) =>
@@ -34,6 +39,11 @@ const useBoardStore = create((set) => ({
         }),
     deleteColumn: async (columnId) => {
         // Call api delete Column
+        try {
+            await boardApi.deleteColumn(columnId)
+        } catch (error) {
+            return
+        }
 
         // Update state
         set((state) => {

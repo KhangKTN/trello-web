@@ -31,6 +31,10 @@ const updateCardOrderIds = async ({ card, sourceColumnId, targetColumnId, cardOr
     })
 }
 
+const deleteColumn = async (columnId) => {
+    return await axios.delete(`${API_HOST}/v1/column/${columnId}`)
+}
+
 // Card
 const addCard = async (data) => {
     await new Promise((resolve) => {
@@ -45,10 +49,11 @@ const deleteCard = async (cardId) => await axios.delete(`${API_HOST}/v1/card/${c
 
 export default {
     fetchBoardDetail,
+    updateColumnOrderIds,
     addColumn,
+    updateCardOrderIds,
+    deleteColumn,
     addCard,
     updateCard,
-    deleteCard,
-    updateColumnOrderIds,
-    updateCardOrderIds
+    deleteCard
 }
