@@ -120,7 +120,7 @@ const AddCardModal = () => {
                         '& label, input': { color: 'primary.text' },
                         '& label.Mui-focused': { color: 'primary.text' },
                         '& .MuiOutlinedInput-root': {
-                            '& fieldset': { borderColor: 'primary.text' },
+                            '& fieldset': { borderColor: 'gray' },
                             '&:hover fieldset': { borderColor: 'primary.text' },
                             '&.Mui-focused fieldset': { borderColor: 'primary.text' }
                         }
@@ -138,12 +138,11 @@ const AddCardModal = () => {
                         width: '100%',
                         marginTop: '16px',
                         marginLeft: { xs: '12px', sm: 0 },
-                        borderColor: 'white',
                         '& label, input': { color: 'primary.text' },
                         '& label.Mui-focused': { color: 'primary.text' },
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
-                                borderColor: 'primary.text'
+                                borderColor: 'gray'
                             },
                             '&:hover fieldset': { borderColor: 'primary.text' },
                             '&.Mui-focused fieldset': { borderColor: 'primary.text' }
@@ -198,8 +197,10 @@ const AddCardModal = () => {
                         startIcon={<Done />}
                         onClick={() => addOrUpdateCard()}
                         sx={{
-                            backgroundColor: 'primary.main',
-                            '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
+                            backgroundImage: 'linear-gradient(to right, #7b4ec7ff 0%, #673ab7  51%, #7b4ec7ff  100%)',
+                            transition: '0.5s',
+                            backgroundSize: '200% auto',
+                            '&:hover': { opacity: 0.8, backgroundPosition: 'right center' }
                         }}
                         variant='contained'
                     >

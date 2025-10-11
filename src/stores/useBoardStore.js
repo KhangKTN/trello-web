@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast'
 import { create } from 'zustand'
 import boardApi from '~/apis/board.api'
 import { BOARD_ID } from '~/pages/Boards/_id'
@@ -41,6 +42,7 @@ const useBoardStore = create((set) => ({
         // Call api delete Column
         try {
             await boardApi.deleteColumn(columnId)
+            toast.success('Column deleted succeed')
         } catch (error) {
             return
         }
@@ -92,6 +94,7 @@ const useBoardStore = create((set) => ({
         // Call api delete Card
         try {
             await boardApi.deleteCard(card._id)
+            toast.success('Card deleted succeed')
         } catch (error) {
             return
         }

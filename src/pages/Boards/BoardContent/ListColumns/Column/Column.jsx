@@ -1,12 +1,10 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import AddCard from '@mui/icons-material/AddCard'
-import Archive from '@mui/icons-material/Archive'
 import CopyAll from '@mui/icons-material/CopyAll'
 import DeleteForever from '@mui/icons-material/DeleteForever'
 import DragHandle from '@mui/icons-material/DragHandle'
 import ExpandMoreOutlined from '@mui/icons-material/ExpandMoreOutlined'
-import ExpandMoreSharp from '@mui/icons-material/ExpandMoreSharp'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -108,7 +106,6 @@ const Column = ({ column }) => {
                                 aria-haspopup='true'
                                 aria-expanded={open ? 'true' : undefined}
                                 onClick={handleClick}
-                                endicon={<ExpandMoreSharp />}
                             />
                         </Tooltip>
                         <Menu
@@ -138,12 +135,6 @@ const Column = ({ column }) => {
                                     <DeleteForever fontSize='small' />
                                 </ListItemIcon>
                                 <ListItemText>Remove</ListItemText>
-                            </MenuItem>
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <Archive fontSize='small' />
-                                </ListItemIcon>
-                                <ListItemText>Archive</ListItemText>
                             </MenuItem>
                         </Menu>
                     </Box>
