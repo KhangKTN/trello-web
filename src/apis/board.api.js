@@ -45,7 +45,12 @@ const addCard = async (data) => {
 
 const updateCard = async (data) => await axios.put(`${API_HOST}/v1/card`, data)
 
-const deleteCard = async (cardId) => await axios.delete(`${API_HOST}/v1/card/${cardId}`)
+const deleteCard = async (cardId) => {
+    await new Promise((resolve) => {
+        setTimeout(resolve, 2000)
+    })
+    await axios.delete(`${API_HOST}/v1/card/${cardId}`)
+}
 
 export default {
     fetchBoardDetail,

@@ -20,6 +20,7 @@ import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import useBoardStore from '~/stores/useBoardStore'
 import useCardModal from '~/stores/useCardModal'
+import useConfirmDialogStore from '~/stores/useConfirmDialogStore'
 
 const stylePlaceholder = {
     border: '2.5px dashed #673ab7',
@@ -27,12 +28,13 @@ const stylePlaceholder = {
     borderRadius: '8px'
 }
 
-const Card = ({ hideMedia, card }) => {
+const Card = ({ card }) => {
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
 
     const changeCardStore = useCardModal((state) => state.change)
     const deleteCard = useBoardStore((state) => state.deleteCard)
+    const useConfirmDialog = useConfirmDialogStore((state) => state)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: card._id,
@@ -59,10 +61,13 @@ const Card = ({ hideMedia, card }) => {
     }
 
     const handleDeleteCard = () => {
-        const isConfirm = window.confirm('Do you want delete card?')
-        if (isConfirm) {
-            deleteCard(card)
-        }
+        useConfirmDialog.change({
+            isOpen: true,
+            title: 'Do you want delete this card?',
+            content: 'This action will permanently delete the Card. Do you want to continue?',
+            action: () => deleteCard(card)
+        })
+        handleClose()
     }
 
     return (
@@ -84,7 +89,7 @@ const Card = ({ hideMedia, card }) => {
         >
             {card?.image ? (
                 <CardMedia
-                    sx={{ borderRadius: '4px 4px 0 0', height: 'auto', aspectRatio: '16/9' }}
+                    sx={{ borderRadius: '4px 4px 0 0', aspectRatio: '16/9' }}
                     component='img'
                     alt='card-img'
                     image={card.image}
@@ -138,15 +143,17 @@ const Card = ({ hideMedia, card }) => {
                         <ListItemText>Edit</ListItemText>
                     </MenuItem>
                     <MenuItem
-                        onClick={() => {
-                            handleDeleteCard()
-                            handleClose()
-                        }}
+                        onClick={() => handleDeleteCard()}
                         size='small'
-                        sx={{ color: 'primary.text' }}
+                        sx={{
+                            '&:hover': {
+                                color: 'error.main',
+                                '& .delete-forever-icon': { color: 'error.main' }
+                            }
+                        }}
                     >
                         <ListItemIcon>
-                            <DeleteForever sx={{ width: '18px', height: '18px' }} />
+                            <DeleteForever className='delete-forever-icon' sx={{ width: '18px', height: '18px' }} />
                         </ListItemIcon>
                         <ListItemText>Remove</ListItemText>
                     </MenuItem>

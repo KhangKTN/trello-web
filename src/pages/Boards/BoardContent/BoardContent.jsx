@@ -13,7 +13,6 @@ import Box from '@mui/material/Box'
 import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import boardApi from '~/apis/board.api'
-import AddCardModal from '~/components/Modal/AddColumnModal/AddCardModal'
 import { MouseSensor, TouchSensor } from '~/libraries/dnd-kit-sensors'
 import useBoardStore from '~/stores/useBoardStore'
 import formatterUtil from '~/utils/formatter.util'
@@ -288,7 +287,6 @@ const BoardContent = ({ board }) => {
 
     return (
         <>
-            <AddCardModal />
             <DndContext
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}

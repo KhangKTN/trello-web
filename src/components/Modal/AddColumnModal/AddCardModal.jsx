@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Modal from '@mui/material/Modal'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import boardApi from '~/apis/board.api'
 import { BOARD_ID } from '~/pages/Boards/_id'
@@ -30,6 +30,8 @@ const AddCardModal = () => {
     const [tittle, setTitle] = useState({ value: '', errMsg: '' })
     const [image, setImg] = useState('')
     const [isFetching, setFetching] = useState(false)
+
+    const titleFieldRef = useRef(null)
 
     const { addCard, updateCard } = useBoardStore((state) => state)
     const changeColumnIds = useColumnsAddCardStore((state) => state.changeColumnIds)
@@ -92,6 +94,15 @@ const AddCardModal = () => {
         setImg(cardData?.image ?? '')
     }, [cardData])
 
+    useEffect(() => {
+        if (isOpenModal) {
+            const timer = setTimeout(() => {
+                titleFieldRef?.current?.focus()
+            }, 0)
+            return () => clearTimeout(timer)
+        }
+    }, [isOpenModal])
+
     return (
         <Modal
             open={isOpenModal}
@@ -104,10 +115,10 @@ const AddCardModal = () => {
                     {cardData?._id ? 'Update' : 'Add'} card
                 </Typography>
                 <TextField
+                    inputRef={titleFieldRef}
                     label='Title'
                     type='text'
                     size='small'
-                    autoFocus
                     value={tittle?.value}
                     onChange={(e) => setTitle({ value: e.target.value, errMsg: '' })}
                     error={Boolean(tittle?.errMsg)}

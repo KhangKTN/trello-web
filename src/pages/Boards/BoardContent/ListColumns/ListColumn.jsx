@@ -8,6 +8,8 @@ import TextField from '@mui/material/TextField'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import boardApi from '~/apis/board.api'
+import AddCardModal from '~/components/Modal/AddColumnModal/AddCardModal'
+import ConfirmDialog from '~/components/Modal/ConfirmDialog'
 import useBoardStore from '~/stores/useBoardStore'
 import { BOARD_ID } from '../../_id'
 import Column from './Column/Column'
@@ -47,108 +49,113 @@ const ListColumn = ({ columns }) => {
     }
 
     return (
-        <SortableContext items={columns?.map((col) => col._id)} strategy={horizontalListSortingStrategy}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    gap: 2,
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    width: '100%',
-                    height: '100%',
-                    px: '12px'
-                }}
-            >
-                {columns?.map((column) => (
-                    <Column key={column?._id} column={column} />
-                ))}
-                {/* Button Add new column */}
-                {isShowForm ? (
-                    <Box
-                        sx={{
-                            minWidth: '250px',
-                            maxWidth: '250px',
-                            height: 'fit-content',
-                            mx: 2,
-                            p: 1.5,
-                            bgcolor: (theme) => (theme.palette.mode === 'light' ? 'white' : '#2a3543'),
-                            borderRadius: '8px'
-                        }}
-                    >
-                        <TextField
-                            id='outlined-search'
-                            label='Enter name column...'
-                            type='text'
-                            size='small'
-                            autoFocus
-                            value={tittle.value}
-                            onChange={(e) => setTitle({ value: e.target.value, errMsg: '' })}
-                            error={Boolean(tittle.errMsg)}
-                            helperText={tittle.errMsg}
+        <>
+            <AddCardModal />
+            <ConfirmDialog />
+            <SortableContext items={columns?.map((col) => col._id)} strategy={horizontalListSortingStrategy}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        gap: 2,
+                        overflowX: 'auto',
+                        overflowY: 'hidden',
+                        width: '100%',
+                        height: '100%',
+                        px: '12px'
+                    }}
+                >
+                    {columns?.map((column) => (
+                        <Column key={column?._id} column={column} />
+                    ))}
+                    {/* Button Add new column */}
+                    {isShowForm ? (
+                        <Box
                             sx={{
-                                width: '100%',
-                                marginLeft: { xs: '12px', sm: 0 },
-                                borderColor: 'white',
-                                '& label, input': { color: 'primary.text' },
-                                '& label.Mui-focused': { color: 'primary.text' },
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': { borderColor: 'primary.text' },
-                                    '&:hover fieldset': { borderColor: 'primary.text' },
-                                    '&.Mui-focused fieldset': { borderColor: 'primary.text' }
-                                }
+                                minWidth: '250px',
+                                maxWidth: '250px',
+                                height: 'fit-content',
+                                mx: 2,
+                                p: 1.5,
+                                bgcolor: (theme) => (theme.palette.mode === 'light' ? 'white' : '#2a3543'),
+                                borderRadius: '8px'
                             }}
-                        />
-                        <Box sx={{ display: 'flex', justifyContent: 'end', columnGap: 2, mt: 2 }}>
+                        >
+                            <TextField
+                                id='outlined-search'
+                                label='Enter name column...'
+                                type='text'
+                                size='small'
+                                autoFocus
+                                value={tittle.value}
+                                onChange={(e) => setTitle({ value: e.target.value, errMsg: '' })}
+                                error={Boolean(tittle.errMsg)}
+                                helperText={tittle.errMsg}
+                                sx={{
+                                    width: '100%',
+                                    marginLeft: { xs: '12px', sm: 0 },
+                                    borderColor: 'white',
+                                    '& label, input': { color: 'primary.text' },
+                                    '& label.Mui-focused': { color: 'primary.text' },
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': { borderColor: 'primary.text' },
+                                        '&:hover fieldset': { borderColor: 'primary.text' },
+                                        '&.Mui-focused fieldset': { borderColor: 'primary.text' }
+                                    }
+                                }}
+                            />
+                            <Box sx={{ display: 'flex', justifyContent: 'end', columnGap: 2, mt: 2 }}>
+                                <Button
+                                    onClick={() => toggleShowForm()}
+                                    sx={{
+                                        color: 'error.light',
+                                        borderColor: 'error.light',
+                                        '&:hover': { color: 'error.main', borderColor: 'error.main' }
+                                    }}
+                                    variant='outlined'
+                                    disabled={isFetching}
+                                >
+                                    Cancel
+                                </Button>
+                                <LoadingButton
+                                    loading={isFetching}
+                                    loadingPosition='start'
+                                    startIcon={<Done />}
+                                    onClick={() => addNewColumn()}
+                                    sx={{
+                                        backgroundColor: 'primary.main',
+                                        '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
+                                    }}
+                                    variant='contained'
+                                >
+                                    <span>OK</span>
+                                </LoadingButton>
+                            </Box>
+                        </Box>
+                    ) : (
+                        <Box
+                            sx={{
+                                minWidth: '200px',
+                                maxWidth: '200px',
+                                height: 'fit-content',
+                                mx: 2,
+                                backgroundColor: (theme) =>
+                                    theme.palette.mode === 'light' ? 'primary.main' : '#2a3543',
+                                borderRadius: '8px',
+                                overflow: 'hidden'
+                            }}
+                        >
                             <Button
                                 onClick={() => toggleShowForm()}
-                                sx={{
-                                    color: 'error.light',
-                                    borderColor: 'error.light',
-                                    '&:hover': { color: 'error.main', borderColor: 'error.main' }
-                                }}
-                                variant='outlined'
-                                disabled={isFetching}
+                                sx={{ color: 'white', width: '100%', py: 1 }}
+                                startIcon={<AddchartIcon />}
                             >
-                                Cancel
+                                Add new column
                             </Button>
-                            <LoadingButton
-                                loading={isFetching}
-                                loadingPosition='start'
-                                startIcon={<Done />}
-                                onClick={() => addNewColumn()}
-                                sx={{
-                                    backgroundColor: 'primary.main',
-                                    '&:hover': { opacity: 0.8, backgroundColor: 'primary.main' }
-                                }}
-                                variant='contained'
-                            >
-                                <span>OK</span>
-                            </LoadingButton>
                         </Box>
-                    </Box>
-                ) : (
-                    <Box
-                        sx={{
-                            minWidth: '200px',
-                            maxWidth: '200px',
-                            height: 'fit-content',
-                            mx: 2,
-                            backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.main' : '#2a3543'),
-                            borderRadius: '8px',
-                            overflow: 'hidden'
-                        }}
-                    >
-                        <Button
-                            onClick={() => toggleShowForm()}
-                            sx={{ color: 'white', width: '100%', py: 1 }}
-                            startIcon={<AddchartIcon />}
-                        >
-                            Add new column
-                        </Button>
-                    </Box>
-                )}
-            </Box>
-        </SortableContext>
+                    )}
+                </Box>
+            </SortableContext>
+        </>
     )
 }
 

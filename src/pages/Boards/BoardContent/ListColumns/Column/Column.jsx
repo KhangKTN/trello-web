@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import useBoardStore from '~/stores/useBoardStore'
 import useCardModal from '~/stores/useCardModal'
+import useConfirmDialogStore from '~/stores/useConfirmDialogStore'
 import sortUtil from '~/utils/sort.util'
 import ListCard from './ListCard/ListCard'
 
@@ -30,6 +31,7 @@ const Column = ({ column }) => {
     const [anchorEl, setAnchorEl] = useState(null)
     const changeModal = useCardModal((state) => state.change)
     const useBoard = useBoardStore((state) => state)
+    const useConfirmDialog = useConfirmDialogStore((state) => state)
 
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: column._id,
@@ -60,7 +62,13 @@ const Column = ({ column }) => {
     }
 
     const handleRemoveColumn = () => {
-        useBoard.deleteColumn(column._id)
+        useConfirmDialog.change({
+            isOpen: true,
+            title: 'Do you want delete this column?',
+            content: 'This action will permanently delete the Column. Do you want to continue?',
+            action: () => useBoard.deleteColumn(column._id)
+        })
+        handleClose()
     }
 
     const sortedCard = sortUtil.sortArrayByOtherArray(column?.cards, column?.cardOrderIds, '_id')
@@ -117,7 +125,12 @@ const Column = ({ column }) => {
                                 'aria-labelledby': 'button-column'
                             }}
                         >
-                            <MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    changeModal({ isOpen: true, columnId: column._id, card: null })
+                                    handleClose()
+                                }}
+                            >
                                 <ListItemIcon>
                                     <AddCard fontSize='small' />
                                 </ListItemIcon>
@@ -130,9 +143,17 @@ const Column = ({ column }) => {
                                 <ListItemText>Copy</ListItemText>
                             </MenuItem>
                             <Divider />
-                            <MenuItem onClick={handleRemoveColumn}>
+                            <MenuItem
+                                sx={{
+                                    '&:hover': {
+                                        color: 'error.main',
+                                        '& .delete-forever-icon': { color: 'error.main' }
+                                    }
+                                }}
+                                onClick={handleRemoveColumn}
+                            >
                                 <ListItemIcon>
-                                    <DeleteForever fontSize='small' />
+                                    <DeleteForever className='delete-forever-icon' fontSize='small' />
                                 </ListItemIcon>
                                 <ListItemText>Remove</ListItemText>
                             </MenuItem>
